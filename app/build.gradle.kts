@@ -1,6 +1,9 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("com.google.dagger.hilt.android")
+    id("kotlin-parcelize")
+    kotlin("kapt")
 }
 
 android {
@@ -47,6 +50,11 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+        kotlinOptions {
+            jvmTarget = "1.8"
+        }
+    }
 }
 
 dependencies {
@@ -62,6 +70,9 @@ dependencies {
     implementation("androidx.navigation:navigation-runtime-ktx:2.7.4")
     implementation("com.google.accompanist:accompanist-navigation-animation:0.33.2-alpha")
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.33.2-alpha")
+    implementation("com.google.dagger:hilt-android:2.48.1")
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+    kapt("com.google.dagger:hilt-android-compiler:2.48.1")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -69,4 +80,17 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+    // qrcode
+    implementation("com.google.zxing:core:3.5.2")
+    // xlog
+    implementation("com.elvishew:xlog:1.10.1")
+    // retrofit2
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+}
+
+// Allow references to generated code
+kapt {
+    correctErrorTypes = true
 }
