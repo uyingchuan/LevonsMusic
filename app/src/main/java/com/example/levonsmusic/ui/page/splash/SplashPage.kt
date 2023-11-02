@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import com.example.levonsmusic.AppNav
 import com.example.levonsmusic.R
 import com.example.levonsmusic.ScreenPaths
+import com.example.levonsmusic.ui.page.login.LoginAccount
 import com.example.levonsmusic.ui.theme.LocalColors
 import kotlinx.coroutines.delay
 
@@ -26,7 +27,8 @@ fun SplashPage() {
     LaunchedEffect(UInt) {
         delay(1000)
         AppNav.instance.popBackStack()
-        AppNav.instance.navigate(ScreenPaths.qrLogin)
+        val route = if (LoginAccount.data == null) ScreenPaths.qrLogin else ScreenPaths.home
+        AppNav.instance.navigate(route)
     }
 
     Box(

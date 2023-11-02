@@ -1,9 +1,7 @@
 package com.example.levonsmusic.model
 
-import android.os.Parcel
 import android.os.Parcelable
 import androidx.annotation.Keep
-import kotlinx.parcelize.Parceler
 import kotlinx.parcelize.Parcelize
 
 @Keep
@@ -28,9 +26,17 @@ class AccountInfoResult(val account: AccountBean, val profile: ProfileBean) : Ap
 
 @Keep
 @Parcelize
+class LoginResult(
+    val account: AccountBean,
+    val profile: ProfileBean,
+    val cookie: String
+) : Parcelable
+
+@Keep
+@Parcelize
 data class AccountBean(
     val id: Long,
-    val userName: String?,
+    val userName: String,
     val type: Int,
     val status: Int,
     val whitelistAuthority: Int,
@@ -42,46 +48,7 @@ data class AccountBean(
     val vipType: Int,
     val viptypeVersion: Double,
     val anonimousUser: Boolean
-) : Parcelable {
-    constructor(parcel: Parcel) : this(
-        parcel.readLong(),
-        parcel.readString(),
-        parcel.readInt(),
-        parcel.readInt(),
-        parcel.readInt(),
-        parcel.readLong(),
-        parcel.readInt(),
-        parcel.readInt(),
-        parcel.readInt(),
-        parcel.readInt(),
-        parcel.readInt(),
-        parcel.readDouble(),
-        parcel.readByte() != 0.toByte()
-    )
-
-    companion object : Parceler<AccountBean> {
-
-        override fun AccountBean.write(parcel: Parcel, flags: Int) {
-            parcel.writeLong(id)
-            parcel.writeString(userName)
-            parcel.writeInt(type)
-            parcel.writeInt(status)
-            parcel.writeInt(whitelistAuthority)
-            parcel.writeLong(createTime)
-            parcel.writeInt(tokenVersion)
-            parcel.writeInt(ban)
-            parcel.writeInt(baoyueVersion)
-            parcel.writeInt(donateVersion)
-            parcel.writeInt(vipType)
-            parcel.writeDouble(viptypeVersion)
-            parcel.writeByte(if (anonimousUser) 1 else 0)
-        }
-
-        override fun create(parcel: Parcel): AccountBean {
-            return AccountBean(parcel)
-        }
-    }
-}
+) : Parcelable
 
 @Keep
 @Parcelize

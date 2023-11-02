@@ -35,6 +35,7 @@ import com.example.levonsmusic.component.LoadingComponent
 import com.example.levonsmusic.extension.dp
 import com.example.levonsmusic.extension.sp
 import com.example.levonsmusic.extension.toPx
+import com.example.levonsmusic.model.LoginResult
 import com.example.levonsmusic.network.MusicApiService
 import com.example.levonsmusic.ui.theme.LocalColors
 import com.example.levonsmusic.util.QRCodeUtil
@@ -144,7 +145,7 @@ class QRLoginViewModel @Inject constructor(private val api: MusicApiService) : V
     var qrCodeBitmap by mutableStateOf<Bitmap?>(null)
 
     // 持有监听扫码状态的Job，重置监听任务时取消上次的任务
-    var authJob: Job? = null
+    private var authJob: Job? = null
 
     fun checkAuth() {
         authJob?.cancel()
@@ -172,6 +173,8 @@ class QRLoginViewModel @Inject constructor(private val api: MusicApiService) : V
     private suspend fun getAccountInfo(cookie: String) {
         val accountInfoResult = api.getAccountInfo(cookie)
         if (accountInfoResult.successful()) {
+            val result = LoginResult(accountInfoResult.account, accountInfoResult.profile, cookie)
+            LoginAccount.data = result
             AppNav.instance.popBackStack()
             AppNav.instance.navigate(ScreenPaths.home)
         }

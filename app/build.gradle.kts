@@ -86,8 +86,12 @@ dependencies {
     implementation("com.elvishew:xlog:1.10.1")
     // retrofit2
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
+    // implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    // MMKV
+    implementation("com.tencent:mmkv:1.3.1")
+    // http logging interceptor
+    // implementation("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.11")
 }
 
 // Allow references to generated code

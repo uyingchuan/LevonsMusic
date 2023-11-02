@@ -8,22 +8,15 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.converter.scalars.ScalarsConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
 import java.util.Date
 import javax.inject.Singleton
 
-private const val BASE_URL =
-    "https://ncmusic.sskevan.cn"
-
-private val retrofit = Retrofit.Builder()
-    .addConverterFactory(ScalarsConverterFactory.create())
-    .addConverterFactory(GsonConverterFactory.create())
-    .baseUrl(BASE_URL)
-    .build()
+private const val BASE_URL = "https://ncmusic.sskevan.cn"
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -31,7 +24,15 @@ object MusicApiModule {
     @Provides
     @Singleton
     fun provideMusicApi(): MusicApiService {
-        return retrofit.create(MusicApiService::class.java)
+        val builder = OkHttpClient.Builder().apply {
+            addInterceptor(LoggingInterceptor())
+            addInterceptor(LoginInterceptor())
+        }
+        return Retrofit.Builder().client(builder.build())
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(MusicApiService::class.java)
     }
 }
 
