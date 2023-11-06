@@ -9,10 +9,10 @@ class LoginInterceptor : Interceptor {
         val loginResult = LoginAccount.data
         if (loginResult != null) {
             val request = chain.request()
-            val url = if (request.url().toString().contains("?")) {
-                request.url().toString() + "&cookie=" + loginResult.cookie
+            val url = if (request.url.toString().contains("?")) {
+                request.url.toString() + "&cookie=" + loginResult.cookie
             } else {
-                request.url().toString() + "?cookie=" + loginResult.cookie
+                request.url.toString() + "?cookie=" + loginResult.cookie
             }
             val builder = request.newBuilder()
             builder.get().url(url)

@@ -11,18 +11,18 @@ class LoggingInterceptor : Interceptor {
         val startNs = System.currentTimeMillis()
         val request = chain.request()
         Log.d("OKHttp", "OKHttp=====> Start")
-        Log.d("OKHttp", "OKHttp=====> " + request.url().toString())
+        Log.d("OKHttp", "OKHttp=====> " + request.url.toString())
 
         val response = chain.proceed(request)
         val tookMs = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNs)
         Log.d(
             "OKHTTP",
-            "OKHttp=====> ${response.code()}${
-                if (response.message().isEmpty()) "" else ' ' + response.message()
+            "OKHttp=====> ${response.code}${
+                if (response.message.isEmpty()) "" else ' ' + response.message
             } (${tookMs}ms)"
         )
 
-        val responseBody = response.body()!!
+        val responseBody = response.body!!
 
         val source = responseBody.source()
         source.request(Long.MAX_VALUE) // Buffer the entire body.

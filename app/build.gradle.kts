@@ -92,6 +92,8 @@ dependencies {
     implementation("com.tencent:mmkv:1.3.1")
     // http logging interceptor
     // implementation("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.11")
+    // coil
+    implementation("io.coil-kt:coil-compose:2.5.0")
 }
 
 // Allow references to generated code
