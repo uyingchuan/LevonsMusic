@@ -19,10 +19,15 @@ import androidx.compose.ui.Modifier
 import com.example.levonsmusic.R
 import com.example.levonsmusic.extension.dp
 import com.example.levonsmusic.player.LevonsPlayerController
+import com.example.levonsmusic.ui.page.community.CommunityPage
+import com.example.levonsmusic.ui.page.discovery.DiscoveryPage
+import com.example.levonsmusic.ui.page.event.EventPage
 import com.example.levonsmusic.ui.page.home.component.MiniPlayer
 import com.example.levonsmusic.ui.page.home.component.MiniPlayerHeight
 import com.example.levonsmusic.ui.page.home.component.TabMenu
 import com.example.levonsmusic.ui.page.home.component.TabMenuItem
+import com.example.levonsmusic.ui.page.mine.MinePage
+import com.example.levonsmusic.ui.page.podcast.PodcastPage
 import com.example.levonsmusic.ui.theme.LocalColors
 
 private val tabMenuItems = listOf(
@@ -74,35 +79,11 @@ fun Body() {
         ) { pagePosition ->
             selectedHomeTabIndex = pagerState.currentPage
             when (pagePosition) {
-                0 -> Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(LocalColors.current.primary)
-                )
-
-                1 -> Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(LocalColors.current.card)
-                )
-
-                2 -> Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(LocalColors.current.thirdText)
-                )
-
-                3 -> Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(LocalColors.current.pure)
-                )
-
-                4 -> Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(LocalColors.current.primaryVariant)
-                )
+                0 -> DiscoveryPage()
+                1 -> PodcastPage()
+                2 -> MinePage()
+                3 -> EventPage()
+                4 -> CommunityPage()
             }
         }
 

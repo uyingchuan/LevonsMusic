@@ -26,3 +26,6 @@ val Dp.toPx
         TypedValue.COMPLEX_UNIT_DIP, value,
         Resources.getSystem().displayMetrics
     )
+
+val Number.pxToDp
+    get() = Dp(toFloat() / Resources.getSystem().displayMetrics.density)
