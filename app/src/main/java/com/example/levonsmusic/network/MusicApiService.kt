@@ -1,6 +1,7 @@
 package com.example.levonsmusic.network
 
 import com.example.levonsmusic.model.AccountInfoResult
+import com.example.levonsmusic.model.PlaylistResult
 import com.example.levonsmusic.model.QRCodeAuthResult
 import com.example.levonsmusic.model.QRCodeKeyResult
 import com.example.levonsmusic.model.QRCodeValueResult
@@ -56,5 +57,8 @@ interface MusicApiService {
     suspend fun getAccountInfo(
         @Query("cookie") cookie: String,
     ): AccountInfoResult
+
+    @GET("/user/playlist")
+    suspend fun getPlaylist(@Query("uid") uid: String): PlaylistResult
 }
 

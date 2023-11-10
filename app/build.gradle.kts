@@ -94,6 +94,8 @@ dependencies {
     // implementation("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.11")
     // coil
     implementation("io.coil-kt:coil-compose:2.5.0")
+    // liveData
+    implementation("androidx.compose.runtime:runtime-livedata:1.1.1")
 }
 
 // Allow references to generated code
