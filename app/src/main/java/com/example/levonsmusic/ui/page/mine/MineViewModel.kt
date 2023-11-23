@@ -4,6 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.MutableLiveData
+import com.example.levonsmusic.component.DragStatus
 import com.example.levonsmusic.model.PlaylistBean
 import com.example.levonsmusic.model.PlaylistResult
 import com.example.levonsmusic.network.MusicApiService
@@ -27,6 +28,9 @@ class MineViewModel @Inject constructor(private val api: MusicApiService) : Base
 
     // 收藏的歌单
     val collectPlaylist = mutableListOf<PlaylistBean>()
+
+    // 主页顶部拖动的状态
+    var dragStatus by mutableStateOf<DragStatus>(DragStatus.Idle)
 
     fun getPlaylist() {
         val uid = LoginAccount.data!!.account.id.toString()

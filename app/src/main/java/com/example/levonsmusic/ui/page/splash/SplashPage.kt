@@ -24,7 +24,7 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun SplashPage() {
-    LaunchedEffect(UInt) {
+    LaunchedEffect(Unit) {
         delay(1000)
         AppNav.instance.popBackStack()
         val route = if (LoginAccount.data == null) ScreenPaths.qrLogin else ScreenPaths.home

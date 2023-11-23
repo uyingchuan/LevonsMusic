@@ -9,8 +9,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.DrawerState
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -26,6 +30,7 @@ import com.example.levonsmusic.ui.page.home.component.MiniPlayer
 import com.example.levonsmusic.ui.page.home.component.MiniPlayerHeight
 import com.example.levonsmusic.ui.page.home.component.TabMenu
 import com.example.levonsmusic.ui.page.home.component.TabMenuItem
+import com.example.levonsmusic.ui.page.mine.MineDrawer
 import com.example.levonsmusic.ui.page.mine.MinePage
 import com.example.levonsmusic.ui.page.podcast.PodcastPage
 import com.example.levonsmusic.ui.theme.LocalColors
@@ -45,23 +50,29 @@ var selectedHomeTabIndex by mutableIntStateOf(2)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun HomePage() {
-    Scaffold(
-        modifier = Modifier.fillMaxSize()
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
+
+    ModalNavigationDrawer(
+        drawerContent = { MineDrawer(drawerState) }
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(LocalColors.current.background)
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
         ) {
-            Body()
-            MiniPlayer()
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(LocalColors.current.background)
+            ) {
+                Body(drawerState)
+                MiniPlayer()
+            }
         }
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun Body() {
+fun Body(drawerState: DrawerState) {
     Column(modifier = Modifier.fillMaxSize()) {
         val pagerState = rememberPagerState(
             initialPage = selectedHomeTabIndex,
@@ -81,7 +92,7 @@ fun Body() {
             when (pagePosition) {
                 0 -> DiscoveryPage()
                 1 -> PodcastPage()
-                2 -> MinePage()
+                2 -> MinePage(drawerState)
                 3 -> EventPage()
                 4 -> CommunityPage()
             }

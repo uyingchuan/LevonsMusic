@@ -1,6 +1,7 @@
 package com.example.levonsmusic.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -35,6 +36,7 @@ fun AppBar(
     modifier: Modifier = Modifier,
     title: String? = null,
     leftIcon: Int = R.drawable.ic_back,
+    leftClick: (() -> Unit)? = null,
     rightIcon: Int? = null,
     dividerVisible: Boolean = false,
     background: Color = LocalColors.current.appBarBackground,
@@ -48,14 +50,14 @@ fun AppBar(
         mutableIntStateOf(0)
     }
 
-    Box(
-        modifier = Modifier
-            .background(background)
-            .fillMaxWidth()
-            .height(88.dp)
-            .zIndex(1f),
-    ) {
-        Box(modifier = modifier) {
+    Box(modifier = modifier) {
+        Box(
+            modifier = Modifier
+                .background(background)
+                .fillMaxWidth()
+                .height(88.dp)
+                .zIndex(1f),
+        ) {
             // 左侧按钮
             AssetIcon(
                 resId = leftIcon,
@@ -64,10 +66,13 @@ fun AppBar(
                     .clip(RoundedCornerShape(50))
                     .padding(20.dp)
                     .size(48.dp)
+                    .clickable {
+                        leftClick?.invoke()
+                    }
                     .onGloballyPositioned {
                         leftWidth = it.size.width
                     },
-                tint = contentColor
+                tint = contentColor,
             )
 
             // 右侧按钮

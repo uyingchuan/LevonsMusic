@@ -96,6 +96,8 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.5.0")
     // liveData
     implementation("androidx.compose.runtime:runtime-livedata:1.1.1")
+    // 顶部appbar折叠功能
+    implementation("me.onebone:toolbar-compose:2.3.5")
 }
 
 // Allow references to generated code

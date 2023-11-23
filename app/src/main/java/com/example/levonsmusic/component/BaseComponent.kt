@@ -13,6 +13,7 @@ import com.example.levonsmusic.util.RequestState
 fun <T> BaseComponent(
     modifier: Modifier = Modifier,
     liveData: LiveData<RequestState<T>>,
+    loadDataBlock: (() -> Unit)? = null,
     reloadDataBlock: (() -> Unit)? = null,
     content: @Composable (data: T) -> Unit
 ) {
@@ -39,7 +40,9 @@ fun <T> BaseComponent(
                 ErrorComponent()
             }
 
-            else -> {}
+            else -> {
+                loadDataBlock?.invoke()
+            }
         }
     }
 }

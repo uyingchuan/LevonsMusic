@@ -49,8 +49,7 @@ import javax.inject.Inject
 fun QRLoginPage() {
     val viewModel = hiltViewModel<QRLoginViewModel>()
 
-    // 第一次进入执行
-    LaunchedEffect(UInt) {
+    LaunchedEffect(Unit) {
         viewModel.checkAuth()
     }
 
