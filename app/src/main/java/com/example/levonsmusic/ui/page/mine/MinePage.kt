@@ -21,6 +21,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.MutableState
@@ -29,7 +30,10 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
@@ -49,8 +53,10 @@ import com.example.levonsmusic.component.rememberDragState
 import com.example.levonsmusic.extension.dp
 import com.example.levonsmusic.extension.onClick
 import com.example.levonsmusic.extension.pxToDp
+import com.example.levonsmusic.extension.sp
 import com.example.levonsmusic.extension.toPx
 import com.example.levonsmusic.ui.page.login.LoginAccount
+import com.example.levonsmusic.ui.page.mine.component.LikePlaylist
 import com.example.levonsmusic.ui.page.mine.component.UserInfo
 import com.example.levonsmusic.ui.theme.LocalColors
 import kotlinx.coroutines.CoroutineScope
@@ -151,8 +157,8 @@ fun Body(
     val density = LocalDensity.current
     val statusTop = WindowInsets.statusBars.getTop(density)
     val toolbarMaxHeight = remember {
-        // 状态栏高度+标题栏高度+用户信息卡片高度+
-        statusTop.pxToDp + stickyTabLayoutHeight + 300.dp + 320.dp
+        // 状态栏高度+标题栏高度+用户信息卡片高度+喜欢歌单卡片高度
+        statusTop.pxToDp + stickyTabLayoutHeight + 300.dp + 320.dp + 206.dp
     }
 
     val stickyPositionTop = remember { statusTop + stickyTabLayoutHeight.toPx }
@@ -204,8 +210,9 @@ private fun PlayList(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(1200.dp)
-                    .background(Color.Green)
+                    .height(360.dp)
+                    .padding(start = 32.dp, end = 32.dp, top = 20.dp)
+                    .background(LocalColors.current.card, RoundedCornerShape(24.dp))
             ) {
             }
         }
@@ -214,8 +221,9 @@ private fun PlayList(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(1200.dp)
-                    .background(Color.Red)
+                    .height(360.dp)
+                    .padding(start = 32.dp, end = 32.dp, top = 20.dp)
+                    .background(LocalColors.current.card, RoundedCornerShape(24.dp))
             ) {
             }
         }
@@ -232,13 +240,13 @@ fun StickyHeader(
     val viewModel: MineViewModel = hiltViewModel()
 
     Surface(color = Color.Transparent) {
-        var background =
+        val background =
             if (toolbarState.progress > 0.001) LocalColors.current.background else LocalColors.current.pure
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(88.dp)
-                .background(Color.Cyan)
+                .background(background)
         )
     }
 }
@@ -271,6 +279,25 @@ private fun CollapsingToolbarScope.ScrollHeader(bodyAlphaValue: Float, toolbarMa
                 .height(300.dp)
                 .graphicsLayer { alpha = bodyAlphaValue }
         )
+
+        Box(modifier = Modifier
+            .graphicsLayer { alpha = bodyAlphaValue }
+            .height(206.dp)
+            .padding(start = 32.dp, end = 32.dp, bottom = 12.dp, top = 20.dp)
+            .clip(RoundedCornerShape(24.dp))
+            .clipToBounds(),
+            contentAlignment = Alignment.Center
+        ) {
+            if (viewModel.favoritePlaylist != null) {
+                LikePlaylist(viewModel.favoritePlaylist!!)
+            } else {
+                Text(
+                    text = "暂时没有喜欢的歌单",
+                    color = LocalColors.current.secondText,
+                    fontSize = 28.sp
+                )
+            }
+        }
     }
 
     val density = LocalDensity.current
