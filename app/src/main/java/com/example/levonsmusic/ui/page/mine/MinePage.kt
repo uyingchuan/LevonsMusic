@@ -34,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
@@ -49,6 +50,8 @@ import com.example.levonsmusic.component.DragState
 import com.example.levonsmusic.component.DragStatus
 import com.example.levonsmusic.component.DraggableHeaderLayout
 import com.example.levonsmusic.component.NetworkImage
+import com.example.levonsmusic.component.TabRowComponent
+import com.example.levonsmusic.component.TabRowStyle
 import com.example.levonsmusic.component.rememberDragState
 import com.example.levonsmusic.extension.dp
 import com.example.levonsmusic.extension.onClick
@@ -69,6 +72,7 @@ import me.onebone.toolbar.ScrollStrategy
 import me.onebone.toolbar.rememberCollapsingToolbarScaffoldState
 
 private val stickyTabLayoutHeight = 88.dp
+private val tabs = listOf("创建歌单", "收藏歌单", "歌单助手")
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -230,6 +234,7 @@ private fun PlayList(
     }
 }
 
+@OptIn(ExperimentalToolbarApi::class)
 @Composable
 fun StickyHeader(
     lazyListState: LazyListState,
@@ -242,12 +247,38 @@ fun StickyHeader(
     Surface(color = Color.Transparent) {
         val background =
             if (toolbarState.progress > 0.001) LocalColors.current.background else LocalColors.current.pure
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(88.dp)
-                .background(background)
-        )
+        TabRowComponent(
+            tabs = tabs,
+            selectedIndex = viewModel.selectedTabIndex,
+            containerColor = background,
+            style = TabRowStyle(
+                isScrollable = false,
+                indicatorPadding = 18.dp,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(stickyTabLayoutHeight)
+                    .background(background)
+                    .graphicsLayer { alpha = bodyAlphaValue },
+                tabDrawBehindBlock = {
+                    if (it != tabs.size - 1) {
+                        drawLine(
+                            color = Color.LightGray,
+                            start = Offset(size.width, size.height * 0.3f),
+                            end = Offset(size.width, size.height * 0.7f),
+                            strokeWidth = 2.dp.toPx()
+                        )
+                    }
+                }
+            ),
+        ) {
+            viewModel.selectedTabIndex = it
+
+            coroutineScope.launch {
+                if (toolbarState.progress != 0f) {
+                    toolbarState.collapse(100)
+                }
+            }
+        }
     }
 }
 

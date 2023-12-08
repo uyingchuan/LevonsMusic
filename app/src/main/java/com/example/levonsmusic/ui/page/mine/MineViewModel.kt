@@ -1,6 +1,7 @@
 package com.example.levonsmusic.ui.page.mine
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.MutableLiveData
@@ -31,6 +32,9 @@ class MineViewModel @Inject constructor(private val api: MusicApiService) : Base
 
     // 主页顶部拖动的状态
     var dragStatus by mutableStateOf<DragStatus>(DragStatus.Idle)
+
+    // 选中的tab下标
+    var selectedTabIndex by mutableIntStateOf(0)
 
     fun getPlaylist() {
         val uid = LoginAccount.data!!.account.id.toString()
