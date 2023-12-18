@@ -1,10 +1,13 @@
 package com.example.levonsmusic.network
 
 import com.example.levonsmusic.model.AccountInfoResult
+import com.example.levonsmusic.model.PlaylistDetailResult
 import com.example.levonsmusic.model.PlaylistResult
 import com.example.levonsmusic.model.QRCodeAuthResult
 import com.example.levonsmusic.model.QRCodeKeyResult
 import com.example.levonsmusic.model.QRCodeValueResult
+import com.example.levonsmusic.model.SongDetailResult
+import com.example.levonsmusic.model.SongUrlResult
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -60,5 +63,17 @@ interface MusicApiService {
 
     @GET("/user/playlist")
     suspend fun getPlaylist(@Query("uid") uid: String): PlaylistResult
+
+    @GET("/song/url")
+    suspend fun getSongUrl(
+        @Query("id") id: Long,
+        @Query("br") br: Int = 128000
+    ): SongUrlResult
+
+    @GET("playlist/detail")
+    suspend fun getPlaylistDetail(@Query("id") id: Long): PlaylistDetailResult
+
+    @GET("song/detail")
+    suspend fun getSongDetail(@Query("ids") ids: String): SongDetailResult
 }
 

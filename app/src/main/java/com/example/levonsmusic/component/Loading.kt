@@ -6,10 +6,16 @@ import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -22,12 +28,15 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
-import com.example.levonsmusic.extension.dp
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import com.example.levonsmusic.R
+import com.example.levonsmusic.extension.sp
 import com.example.levonsmusic.ui.theme.LocalColors
 
 @Composable
 fun LoadingComponent(
-    modifier: Modifier = Modifier.fillMaxSize(),
+    modifier: Modifier = Modifier,
     loading: Boolean = true,
     width: Dp = 60.dp,
     height: Dp = 50.dp,
@@ -53,7 +62,7 @@ fun LoadingComponent(
         }
     }
 
-    Box(modifier, alignment) {
+    Box(modifier.fillMaxSize(), alignment) {
         Canvas(
             modifier = Modifier
                 .width(width)
@@ -109,6 +118,39 @@ fun LoadingComponent(
                 topLeft = Offset(rectWidth * 6, canvasHeight - rectHeight4),
                 size = Size(rectWidth, rectHeight4)
             )
+        }
+    }
+}
+
+@Composable
+fun HeartbeatLoading(
+    onDismissRequest: () -> Unit,
+) {
+    Dialog(
+        onDismissRequest = onDismissRequest,
+    ) {
+        Surface(
+            modifier = Modifier
+                .width(200.dp)
+                .height(150.dp),
+            shape = RoundedCornerShape(12.dp),
+            color = Color.Black.copy(alpha = 0.3f)
+        ) {
+            Column(
+                verticalArrangement = Arrangement.SpaceEvenly,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                AssetImage(
+                    R.drawable.heartbeat,
+                    modifier = Modifier
+                        .size(50.dp)
+                )
+                Text(
+                    text = "正在打开心动模式...",
+                    fontSize = 32.sp,
+                    color = Color.White
+                )
+            }
         }
     }
 }

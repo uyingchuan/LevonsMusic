@@ -12,7 +12,7 @@ data class PlaylistResult(
 @Parcelize
 data class PlaylistBean(
     val tracks: List<TrackBean>,
-    val trackIds: List<TrackIdBean>,
+    val trackIds: List<TrackIdBean>?,
     val creator: CreatorBean,
     val name: String,
     val coverImgUrl: String,

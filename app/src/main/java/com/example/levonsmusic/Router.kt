@@ -1,7 +1,10 @@
 package com.example.levonsmusic
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.background
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -26,7 +29,11 @@ object AppNav {
 @Composable
 fun AppNavGraph() {
     AppNav.instance = rememberNavController()
-    NavHost(navController = AppNav.instance, startDestination = ScreenPaths.splash) {
+    NavHost(
+        navController = AppNav.instance,
+        startDestination = ScreenPaths.splash,
+        modifier = Modifier.background(Color.Transparent)
+    ) {
         composable(ScreenPaths.splash) {
             SplashPage()
         }

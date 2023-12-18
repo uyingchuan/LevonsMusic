@@ -10,6 +10,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Row
@@ -42,6 +43,7 @@ import com.example.levonsmusic.ScreenPaths
 import com.example.levonsmusic.component.AssetIcon
 import com.example.levonsmusic.component.AssetImage
 import com.example.levonsmusic.component.CircleProgress
+import com.example.levonsmusic.component.NetworkImage
 import com.example.levonsmusic.extension.dp
 import com.example.levonsmusic.extension.sp
 import com.example.levonsmusic.player.LevonsPlayerController
@@ -79,6 +81,10 @@ private fun MiniPlayerContent() {
         mutableStateOf(Animatable(0f))
     }
 
+    // 当前正在播放的歌曲信息
+    val currentSongDetail =
+        LevonsPlayerController.originPlaylist[LevonsPlayerController.currentOriginIndex]
+
     // 控制封面图旋转动画
     LaunchedEffect(LevonsPlayerController.isPlaying) {
         if (LevonsPlayerController.isPlaying) {
@@ -115,8 +121,10 @@ private fun MiniPlayerContent() {
                 contentAlignment = Alignment.Center
             ) {
                 AssetImage(R.drawable.ic_disc, modifier = Modifier.fillMaxSize())
-                AssetImage(
-                    R.drawable.ic_default_disk_cover,
+                NetworkImage(
+                    currentSongDetail.al.picUrl,
+                    placeholder = R.drawable.ic_default_disk_cover,
+                    error = R.drawable.ic_default_disk_cover,
                     modifier = Modifier
                         .size(71.dp)
                         .rotate(rotateAngle.value)
@@ -133,7 +141,7 @@ private fun MiniPlayerContent() {
                             fontSize = 30.sp
                         )
                     ) {
-                        append("Gwola")
+                        append(currentSongDetail.name)
                     }
                     withStyle(
                         style = SpanStyle(
@@ -141,7 +149,7 @@ private fun MiniPlayerContent() {
                             fontSize = 24.sp
                         )
                     ) {
-                        append(" - Honey Cocaine")
+                        append(" - ${currentSongDetail.ar[0].name}")
                     }
                 },
                 maxLines = 1,
@@ -156,7 +164,14 @@ private fun MiniPlayerContent() {
                 modifier = Modifier
                     .padding(end = 16.dp)
                     .size(75.dp)
-                    .clip(CircleShape),
+                    .clip(CircleShape)
+                    .clickable {
+                        if (LevonsPlayerController.isPlaying) {
+                            LevonsPlayerController.pause()
+                        } else {
+                            LevonsPlayerController.resume()
+                        }
+                    },
                 contentAlignment = Alignment.Center
             ) {
                 AssetIcon(
@@ -165,7 +180,10 @@ private fun MiniPlayerContent() {
                     modifier = Modifier.size(30.dp),
                     tint = Color.Gray
                 )
-                CircleProgress(progress = 90, modifier = Modifier.size(58.dp))
+                CircleProgress(
+                    progress = LevonsPlayerController.progress,
+                    modifier = Modifier.size(58.dp)
+                )
             }
 
             // 歌单按钮

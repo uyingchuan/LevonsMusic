@@ -98,6 +98,8 @@ dependencies {
     implementation("androidx.compose.runtime:runtime-livedata:1.1.1")
     // 顶部appbar折叠功能
     implementation("me.onebone:toolbar-compose:2.3.5")
+    // eventbus
+    implementation("org.greenrobot:eventbus:3.3.1")
 }
 
 // Allow references to generated code

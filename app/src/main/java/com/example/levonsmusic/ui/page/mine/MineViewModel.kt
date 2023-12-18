@@ -1,5 +1,6 @@
 package com.example.levonsmusic.ui.page.mine
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -8,7 +9,10 @@ import androidx.lifecycle.MutableLiveData
 import com.example.levonsmusic.component.DragStatus
 import com.example.levonsmusic.model.PlaylistBean
 import com.example.levonsmusic.model.PlaylistResult
+import com.example.levonsmusic.model.SongDetail
 import com.example.levonsmusic.network.MusicApiService
+import com.example.levonsmusic.player.LevonsPlayerController
+import com.example.levonsmusic.player.MusicPlayerMode
 import com.example.levonsmusic.ui.page.login.LoginAccount
 import com.example.levonsmusic.util.BaseViewModel
 import com.example.levonsmusic.util.RequestState
@@ -60,5 +64,28 @@ class MineViewModel @Inject constructor(private val api: MusicApiService) : Base
             personalPlaylist.addAll(personalList)
             collectPlaylist.addAll(collectList)
         }
+    }
+
+    suspend fun playHeartBeatMode() {
+        if (favoritePlaylist == null) return
+        val trackId = favoritePlaylist!!.id
+        val playlistBean = api.getPlaylistDetail(trackId).playlist
+        val trackIds = playlistBean.trackIds
+        val ids = StringBuffer()
+        if (trackIds != null) {
+            val size = trackIds.size
+            for (i in 0 until size) {
+                if (i == size - 1) {
+                    ids.append(trackIds[i].id)
+                } else {
+                    ids.append(trackIds[i].id).append(",")
+                }
+            }
+        }
+        val playlist: List<SongDetail> = api.getSongDetail(ids.toString()).songs
+        LevonsPlayerController.playMode = MusicPlayerMode.HEARTBEAT
+        LevonsPlayerController.startPlaylist(playlist, 0)
+        LevonsPlayerController.showMiniPlayer = true
+        Log.d("LEVONS", "OVER")
     }
 }

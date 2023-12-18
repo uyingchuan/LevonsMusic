@@ -14,14 +14,21 @@ import androidx.navigation.compose.rememberNavController
 import com.elvishew.xlog.LogConfiguration
 import com.elvishew.xlog.LogLevel
 import com.elvishew.xlog.XLog
+import com.example.levonsmusic.player.LevonsPlayerController
 import com.example.levonsmusic.ui.theme.LevonsMusicTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    companion object {
+        lateinit var instance: MainActivity
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        instance = this
+        lifecycle.addObserver(LevonsPlayerController)
 
         // init xLog
         val config = LogConfiguration.Builder()
