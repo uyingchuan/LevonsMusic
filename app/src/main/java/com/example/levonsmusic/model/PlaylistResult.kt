@@ -9,6 +9,7 @@ data class PlaylistResult(
     val playlist: List<PlaylistBean>
 ) : ApiResult()
 
+@Keep
 @Parcelize
 data class PlaylistBean(
     val tracks: List<TrackBean>,
@@ -22,7 +23,32 @@ data class PlaylistBean(
     val description: String?,
     val shareCount: Int,
     val commentCount: Int
-) : Parcelable
+) : Parcelable {
+    override fun hashCode(): Int {
+        return super.hashCode()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as PlaylistBean
+
+        if (tracks != other.tracks) return false
+        if (trackIds != other.trackIds) return false
+        if (creator != other.creator) return false
+        if (name != other.name) return false
+        if (coverImgUrl != other.coverImgUrl) return false
+        if (trackCount != other.trackCount) return false
+        if (id != other.id) return false
+        if (playCount != other.playCount) return false
+        if (description != other.description) return false
+        if (shareCount != other.shareCount) return false
+        if (commentCount != other.commentCount) return false
+
+        return true
+    }
+}
 
 @Keep
 data class TrackBean(

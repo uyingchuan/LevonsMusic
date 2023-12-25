@@ -1,6 +1,5 @@
 package com.example.levonsmusic.ui.page.mine
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -86,6 +85,5 @@ class MineViewModel @Inject constructor(private val api: MusicApiService) : Base
         LevonsPlayerController.playMode = MusicPlayerMode.HEARTBEAT
         LevonsPlayerController.startPlaylist(playlist, 0)
         LevonsPlayerController.showMiniPlayer = true
-        Log.d("LEVONS", "OVER")
     }
 }

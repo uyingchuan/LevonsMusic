@@ -89,6 +89,13 @@ object LevonsPlayerController : MusicPlayerListener, DefaultLifecycleObserver {
     }
 
     /**
+     * 判断传入歌曲是否是当前播放歌曲
+     */
+    fun checkIsSongPlaying(songDetail: SongDetail): Boolean {
+        return originPlaylist.getOrNull(currentOriginIndex)?.id == songDetail.id
+    }
+
+    /**
      * 根据播放模式[playMode]以及原始歌单[originPlaylist]生成播放歌单[playlist]
      */
     private fun generatePlaylist(originIndex: Int) {

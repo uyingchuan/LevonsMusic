@@ -58,7 +58,7 @@ class MusicPlayerService : Service() {
     }
 
     /**
-     * 当服务即将呗销毁时系统调用此方法
+     * 当服务即将被销毁时系统调用此方法
      */
     override fun onDestroy() {
         unregisterBroadcastReceiver()

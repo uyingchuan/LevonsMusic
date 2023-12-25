@@ -1,6 +1,5 @@
 package com.example.levonsmusic.ui.page.mine.component
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -26,8 +25,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
+import androidx.core.os.bundleOf
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.levonsmusic.AppNav
 import com.example.levonsmusic.R
+import com.example.levonsmusic.ScreenPaths
 import com.example.levonsmusic.component.AssetImage
 import com.example.levonsmusic.component.HeartbeatLoading
 import com.example.levonsmusic.component.NetworkImage
@@ -50,7 +52,11 @@ fun LikePlaylist(playlist: PlaylistBean, verticalPadding: Dp = 32.dp) {
         modifier = Modifier
             .background(LocalColors.current.card)
             .fillMaxWidth()
-            .clickable { }
+            .clickable {
+                val destination = AppNav.instance.graph.findNode(ScreenPaths.playlist)
+                val bundle = bundleOf(Pair("playlistBean", playlist))
+                AppNav.instance.navigate(destination!!.id, bundle)
+            }
             .padding(horizontal = 32.dp, vertical = verticalPadding),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -92,9 +98,7 @@ fun LikePlaylist(playlist: PlaylistBean, verticalPadding: Dp = 32.dp) {
             onClick = {
                 scope.launch {
                     loading = true
-                    Log.d("LEVONS", "START")
                     viewModel.playHeartBeatMode()
-                    Log.d("LEVONS", "FALSE")
                     loading = false
                 }
             },
@@ -104,7 +108,7 @@ fun LikePlaylist(playlist: PlaylistBean, verticalPadding: Dp = 32.dp) {
             modifier = Modifier
                 .height(48.dp),
             shape = RoundedCornerShape(24.dp),
-            contentPadding = PaddingValues(horizontal = 24.dp),
+            contentPadding = PaddingValues(horizontal = 24.dp, vertical = 4.dp),
             content = {
                 AssetImage(R.drawable.heartbeat_outline, modifier = Modifier.size(32.dp))
                 Text(text = "心动模式", fontSize = 24.sp, color = LocalColors.current.secondText)

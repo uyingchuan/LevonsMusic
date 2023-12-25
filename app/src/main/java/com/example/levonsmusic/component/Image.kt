@@ -52,9 +52,14 @@ fun NetworkImage(
         .data(url)
         .crossfade(false)
         .allowHardware(allowHardware)
-        .placeholder(placeholder)
-        .error(error)
         .transformations(transformations)
+
+    if (placeholder != -1) {
+        modelBuilder.placeholder(placeholder)
+    }
+    if (error != -1) {
+        modelBuilder.error(error)
+    }
 
     Image(
         painter = rememberAsyncImagePainter(model = modelBuilder.build()),

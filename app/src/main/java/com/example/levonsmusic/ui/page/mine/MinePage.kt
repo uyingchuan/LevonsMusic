@@ -146,7 +146,6 @@ private fun TopAppBar(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Body(
     toolbarAlphaState: MutableState<Float>,
@@ -187,7 +186,7 @@ fun Body(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalToolbarApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun PlayList(
     bodyAlphaValue: Float,
