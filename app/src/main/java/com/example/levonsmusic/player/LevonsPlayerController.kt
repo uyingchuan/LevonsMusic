@@ -18,10 +18,12 @@ import androidx.lifecycle.LifecycleOwner
 import com.example.levonsmusic.MainActivity
 import com.example.levonsmusic.MusicApplication
 import com.example.levonsmusic.extension.getNextIndex
+import com.example.levonsmusic.extension.getPreIndex
 import com.example.levonsmusic.extension.toFormatDuration
 import com.example.levonsmusic.model.SongDetail
 import com.example.levonsmusic.service.MusicPlayerService
 import com.example.levonsmusic.util.showTextToast
+import org.greenrobot.eventbus.EventBus
 
 object LevonsPlayerController : MusicPlayerListener, DefaultLifecycleObserver {
     // 是否展示底部mini播放器
@@ -120,6 +122,8 @@ object LevonsPlayerController : MusicPlayerListener, DefaultLifecycleObserver {
     private fun startPlaying(songDetail: SongDetail) {
         LevonsMusicPlayer.setDataSource(songDetail)
         LevonsMusicPlayer.start()
+        // 发布切换歌曲事件
+        EventBus.getDefault().post(MusicPlayerChangeSongEvent(songDetail))
     }
 
     override fun onCreate(owner: LifecycleOwner) {
@@ -138,13 +142,24 @@ object LevonsPlayerController : MusicPlayerListener, DefaultLifecycleObserver {
     }
 
     /**
-     * 自动播放下一曲
+     * 播放下一曲
      */
-    private fun playingNextSong() {
+    fun playNextSong() {
         if (playMode == MusicPlayerMode.SINGLE) {
-            resume()
+            playingIndex(currentIndex)
         } else {
             playingIndex(playlist.getNextIndex(currentIndex))
+        }
+    }
+
+    /**
+     * 播放上一曲
+     */
+    fun playPreSong() {
+        if (playMode == MusicPlayerMode.SINGLE) {
+            playingIndex(currentIndex)
+        } else {
+            playingIndex(playlist.getPreIndex(currentIndex))
         }
     }
 
@@ -192,11 +207,11 @@ object LevonsPlayerController : MusicPlayerListener, DefaultLifecycleObserver {
         isPlaying = status == MusicPlayerStatus.STARTED
         when (status) {
             MusicPlayerStatus.COMPLETED -> {
-                playingNextSong()
+                playNextSong()
             }
 
             MusicPlayerStatus.ERROR -> {
-                playingNextSong()
+                playNextSong()
             }
 
             MusicPlayerStatus.STOPPED -> {

@@ -57,7 +57,6 @@ import com.example.levonsmusic.R
 import com.example.levonsmusic.component.AppBar
 import com.example.levonsmusic.component.AssetIcon
 import com.example.levonsmusic.component.BaseComponent
-import com.example.levonsmusic.component.HeaderBackgroundShape
 import com.example.levonsmusic.component.NetworkImage
 import com.example.levonsmusic.extension.dp
 import com.example.levonsmusic.extension.onClick
@@ -68,6 +67,7 @@ import com.example.levonsmusic.model.SongDetail
 import com.example.levonsmusic.player.LevonsPlayerController
 import com.example.levonsmusic.ui.page.login.LoginAccount
 import com.example.levonsmusic.ui.theme.LocalColors
+import com.example.levonsmusic.util.HeaderBackgroundShape
 import me.onebone.toolbar.CollapsingToolbarScaffold
 import me.onebone.toolbar.CollapsingToolbarScaffoldState
 import me.onebone.toolbar.CollapsingToolbarScope

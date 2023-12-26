@@ -7,3 +7,11 @@ fun <T> List<T>.getNextIndex(index: Int): Int {
         index + 1
     }
 }
+
+fun <T> List<T>.getPreIndex(index: Int): Int {
+    return if (index == 0) {
+        this.size - 1
+    } else {
+        index - 1
+    }
+}

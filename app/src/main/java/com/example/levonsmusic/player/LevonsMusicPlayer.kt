@@ -11,6 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import org.greenrobot.eventbus.EventBus
 import java.util.Timer
 import java.util.TimerTask
 
@@ -134,9 +135,23 @@ object LevonsMusicPlayer : MusicPlayer,
      */
     private fun setPlayerStatus(status: MusicPlayerStatus) {
         playerStatus = status
+
+        // 通知监听者
         playerEventListeners.forEach {
             it.onStatusChange(status)
         }
+
+        // 发布播放、暂停事件
+        if (status == MusicPlayerStatus.PAUSED) {
+            currentSongDetail?.let {
+                EventBus.getDefault().post(MusicPlayerPauseEvent())
+            }
+        } else if (status == MusicPlayerStatus.STARTED) {
+            currentSongDetail?.let {
+                EventBus.getDefault().post(MusicPlayerPlayEvent())
+            }
+        }
+
         Log.d("LevonsMusicPlayer", "SetPlayerStatus($status)")
     }
 
