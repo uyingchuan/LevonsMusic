@@ -28,6 +28,7 @@ import com.example.levonsmusic.ui.page.discovery.DiscoveryPage
 import com.example.levonsmusic.ui.page.event.EventPage
 import com.example.levonsmusic.ui.page.home.component.MiniPlayer
 import com.example.levonsmusic.ui.page.home.component.MiniPlayerHeight
+import com.example.levonsmusic.ui.page.home.component.PlaylistBottomSheet
 import com.example.levonsmusic.ui.page.home.component.TabMenu
 import com.example.levonsmusic.ui.page.home.component.TabMenuItem
 import com.example.levonsmusic.ui.page.mine.MineDrawer
@@ -65,6 +66,7 @@ fun HomePage() {
             ) {
                 Body(drawerState)
                 MiniPlayer()
+                PlaylistBottomSheet()
             }
         }
     }

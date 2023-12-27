@@ -30,7 +30,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.levonsmusic.AppNav
 import com.example.levonsmusic.R
 import com.example.levonsmusic.ScreenPaths
-import com.example.levonsmusic.component.AssetImage
+import com.example.levonsmusic.component.AssetIcon
 import com.example.levonsmusic.component.HeartbeatLoading
 import com.example.levonsmusic.component.NetworkImage
 import com.example.levonsmusic.extension.dp
@@ -110,8 +110,12 @@ fun LikePlaylist(playlist: PlaylistBean, verticalPadding: Dp = 32.dp) {
             shape = RoundedCornerShape(24.dp),
             contentPadding = PaddingValues(horizontal = 24.dp, vertical = 4.dp),
             content = {
-                AssetImage(R.drawable.heartbeat_outline, modifier = Modifier.size(32.dp))
-                Text(text = "心动模式", fontSize = 24.sp, color = LocalColors.current.secondText)
+                AssetIcon(
+                    R.drawable.ic_play_mode_heartbeat,
+                    modifier = Modifier.size(32.dp),
+                    tint = LocalColors.current.primary
+                )
+                Text(text = " 心动模式", fontSize = 24.sp, color = LocalColors.current.secondText)
             }
         )
     }

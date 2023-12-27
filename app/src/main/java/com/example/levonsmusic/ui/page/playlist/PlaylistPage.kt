@@ -65,6 +65,8 @@ import com.example.levonsmusic.extension.toPx
 import com.example.levonsmusic.model.PlaylistBean
 import com.example.levonsmusic.model.SongDetail
 import com.example.levonsmusic.player.LevonsPlayerController
+import com.example.levonsmusic.ui.page.home.component.MiniPlayer
+import com.example.levonsmusic.ui.page.home.component.PlaylistBottomSheet
 import com.example.levonsmusic.ui.page.login.LoginAccount
 import com.example.levonsmusic.ui.theme.LocalColors
 import com.example.levonsmusic.util.HeaderBackgroundShape
@@ -95,6 +97,9 @@ fun PlaylistPage(playlistBean: PlaylistBean) {
         ) {
             Body()
         }
+
+        MiniPlayer()
+        PlaylistBottomSheet()
     }
 }
 

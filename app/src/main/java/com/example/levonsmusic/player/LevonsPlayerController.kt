@@ -29,6 +29,9 @@ object LevonsPlayerController : MusicPlayerListener, DefaultLifecycleObserver {
     // 是否展示底部mini播放器
     var showMiniPlayer by mutableStateOf(false)
 
+    // 是否展示播放列表底部弹窗
+    var showPlaylistBottomSheet by mutableStateOf(false)
+
     // 正在播放的歌曲列表
     val playlist = mutableStateListOf<SongDetail>()
 
@@ -161,6 +164,46 @@ object LevonsPlayerController : MusicPlayerListener, DefaultLifecycleObserver {
         } else {
             playingIndex(playlist.getPreIndex(currentIndex))
         }
+    }
+
+    /**
+     * 从[originPlaylist]中删除指定下标[index]歌曲
+     * 如果下标[index]的歌曲是正在播放的歌曲，则切换播放原始列表中的下一曲
+     */
+    fun removeOriginSongByIndex(index: Int) {
+        if (originPlaylist.size <= 1) return
+
+        if (index == currentOriginIndex) {
+            val nextSongId = originPlaylist[originPlaylist.getNextIndex(currentOriginIndex)].id
+            originPlaylist.removeAt(currentOriginIndex)
+            playlist.removeAt(currentIndex)
+            playingOriginIndex(originPlaylist.indexOfFirst { it.id == nextSongId })
+        } else {
+            val removeSongId = originPlaylist[index].id
+            val currentSongId = originPlaylist[currentOriginIndex].id
+            playlist.removeIf { it.id == removeSongId }
+            originPlaylist.removeAt(index)
+            currentIndex = playlist.indexOfFirst { it.id == currentSongId }
+            currentOriginIndex = playlist.indexOfFirst { it.id == currentSongId }
+        }
+    }
+
+    /**
+     * 改变播放模式
+     */
+    fun changePlayMode(musicPlayerMode: MusicPlayerMode) {
+        playMode = musicPlayerMode
+    }
+
+    /**
+     * 从[originPlaylist]中检索指定下标歌曲播放
+     */
+    fun playingOriginIndex(index: Int) {
+        if (originPlaylist.size <= index) return
+        currentOriginIndex = index
+        generatePlaylist(currentOriginIndex)
+        currentIndex = playlist.indexOfFirst { it.id == originPlaylist[index].id }
+        startPlaying(originPlaylist[index])
     }
 
     /**

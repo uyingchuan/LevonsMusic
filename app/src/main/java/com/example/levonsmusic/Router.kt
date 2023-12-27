@@ -2,7 +2,6 @@ package com.example.levonsmusic
 
 import android.annotation.SuppressLint
 import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -33,7 +32,6 @@ object AppNav {
     lateinit var instance: NavHostController
 }
 
-@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
 fun AppNavGraph() {
     AppNav.instance = rememberNavController()
@@ -60,7 +58,14 @@ fun AppNavGraph() {
                 type = NavType.ParcelableType(PlaylistBean::class.java)
             })
         ) {
-            PlaylistPage(it.arguments!!.getParcelable("playlistBean", PlaylistBean::class.java)!!)
+            if (Build.VERSION.SDK_INT >= 33) {
+                PlaylistPage(
+                    it.arguments!!.getParcelable(
+                        "playlistBean",
+                        PlaylistBean::class.java
+                    )!!
+                )
+            }
         }
     }
 }

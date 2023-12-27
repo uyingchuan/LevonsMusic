@@ -141,7 +141,7 @@ fun HeartbeatLoading(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 AssetImage(
-                    R.drawable.heartbeat,
+                    R.drawable.ic_heartbeat,
                     modifier = Modifier
                         .size(50.dp)
                 )

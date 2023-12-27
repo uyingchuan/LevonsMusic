@@ -66,7 +66,6 @@ dependencies {
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material3:material3")
     implementation("androidx.navigation:navigation-runtime-ktx:2.7.4")
     implementation("com.google.accompanist:accompanist-navigation-animation:0.33.2-alpha")
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.33.2-alpha")
@@ -100,6 +99,10 @@ dependencies {
     implementation("me.onebone:toolbar-compose:2.3.5")
     // eventbus
     implementation("org.greenrobot:eventbus:3.3.1")
+    // material3
+    implementation("androidx.compose.material3:material3:1.1.0-beta01")
+    // material2
+    implementation("androidx.compose.material:material:1.5.0-alpha01")
 }
 
 // Allow references to generated code

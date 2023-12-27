@@ -45,6 +45,7 @@ import com.example.levonsmusic.component.AssetImage
 import com.example.levonsmusic.component.CircleProgress
 import com.example.levonsmusic.component.NetworkImage
 import com.example.levonsmusic.extension.dp
+import com.example.levonsmusic.extension.onClick
 import com.example.levonsmusic.extension.sp
 import com.example.levonsmusic.player.LevonsPlayerController
 import com.example.levonsmusic.ui.theme.LocalColors
@@ -192,7 +193,10 @@ private fun MiniPlayerContent() {
                 modifier = Modifier
                     .size(75.dp)
                     .clip(CircleShape)
-                    .padding(12.dp),
+                    .padding(12.dp)
+                    .onClick {
+                        LevonsPlayerController.showPlaylistBottomSheet = true
+                    },
                 tint = Color.Gray,
             )
 
