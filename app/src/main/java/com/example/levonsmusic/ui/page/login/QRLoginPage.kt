@@ -169,6 +169,12 @@ class QRLoginViewModel @Inject constructor(private val api: MusicApiService) : V
         }
     }
 
+    /**
+     * TODO 刷新登录不支持刷新二维码登录的cookie /
+     * 等加入验证码登陆后，这里需要做一个区分 /
+     * 二维码登录在下次启动app时需要再次登录 /
+     * 验证码登录则使用刷新登录
+     */
     private suspend fun getAccountInfo(cookie: String) {
         val accountInfoResult = api.getAccountInfo(cookie)
         if (accountInfoResult.successful()) {

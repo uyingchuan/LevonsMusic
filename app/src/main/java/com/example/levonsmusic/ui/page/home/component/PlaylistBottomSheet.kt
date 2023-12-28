@@ -32,6 +32,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.levonsmusic.R
 import com.example.levonsmusic.component.AssetIcon
 import com.example.levonsmusic.extension.dp
@@ -40,8 +41,10 @@ import com.example.levonsmusic.extension.sp
 import com.example.levonsmusic.model.SongDetail
 import com.example.levonsmusic.player.LevonsPlayerController
 import com.example.levonsmusic.player.MusicPlayerMode
+import com.example.levonsmusic.ui.page.home.HomeViewModel
 import com.example.levonsmusic.ui.page.playlist.SongItemInPlaying
 import com.example.levonsmusic.ui.theme.LocalColors
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -78,15 +81,18 @@ fun PlaylistBottomSheet() {
         }
     }
 
+    /**
+     * TODO 找找material3的实现吧
+     */
     ModalBottomSheetLayout(
-        sheetContent = { Content() },
+        sheetContent = { Content(scope) },
         sheetState = sheetState,
         sheetBackgroundColor = Color.Transparent
     ) { }
 }
 
 @Composable
-private fun Content() {
+private fun Content(coroutineScope: CoroutineScope) {
     val lazyListState = rememberLazyListState()
 
     LaunchedEffect(LevonsPlayerController.showPlaylistBottomSheet) {
@@ -103,7 +109,7 @@ private fun Content() {
             .background(LocalColors.current.pure)
             .padding(top = 48.dp)
     ) {
-        PlaylistHeader()
+        PlaylistHeader(coroutineScope)
 
         LazyColumn(
             modifier = Modifier
@@ -179,7 +185,9 @@ private fun PlaylistItem(index: Int, songDetail: SongDetail) {
 }
 
 @Composable
-private fun PlaylistHeader() {
+private fun PlaylistHeader(coroutineScope: CoroutineScope) {
+    val homeViewModel: HomeViewModel = hiltViewModel()
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -205,22 +213,30 @@ private fun PlaylistHeader() {
         Row(
             modifier = Modifier
                 .onClick {
-                    when (LevonsPlayerController.playMode) {
-                        MusicPlayerMode.SINGLE -> LevonsPlayerController.changePlayMode(
-                            MusicPlayerMode.RANDOM
-                        )
+                    coroutineScope.launch {
+                        when (LevonsPlayerController.playMode) {
+                            MusicPlayerMode.SINGLE -> LevonsPlayerController.changePlayMode(
+                                MusicPlayerMode.RANDOM
+                            )
 
-                        MusicPlayerMode.RANDOM -> LevonsPlayerController.changePlayMode(
-                            MusicPlayerMode.HEARTBEAT
-                        )
+                            MusicPlayerMode.RANDOM -> {
+                                try {
+                                    homeViewModel.heartbeatLoading = true
+                                    LevonsPlayerController.changePlayMode(MusicPlayerMode.HEARTBEAT)
+                                    homeViewModel.heartbeatLoading = false
+                                } catch (e: Exception) {
+                                    homeViewModel.heartbeatLoading = false
+                                }
+                            }
 
-                        MusicPlayerMode.HEARTBEAT -> LevonsPlayerController.changePlayMode(
-                            MusicPlayerMode.LOOP
-                        )
+                            MusicPlayerMode.HEARTBEAT -> LevonsPlayerController.changePlayMode(
+                                MusicPlayerMode.LOOP
+                            )
 
-                        MusicPlayerMode.LOOP -> LevonsPlayerController.changePlayMode(
-                            MusicPlayerMode.SINGLE
-                        )
+                            MusicPlayerMode.LOOP -> LevonsPlayerController.changePlayMode(
+                                MusicPlayerMode.SINGLE
+                            )
+                        }
                     }
                 }
                 .padding(horizontal = 16.dp, vertical = 8.dp),

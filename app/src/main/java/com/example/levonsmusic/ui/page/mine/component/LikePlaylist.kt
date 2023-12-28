@@ -15,11 +15,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,11 +27,11 @@ import com.example.levonsmusic.AppNav
 import com.example.levonsmusic.R
 import com.example.levonsmusic.ScreenPaths
 import com.example.levonsmusic.component.AssetIcon
-import com.example.levonsmusic.component.HeartbeatLoading
 import com.example.levonsmusic.component.NetworkImage
 import com.example.levonsmusic.extension.dp
 import com.example.levonsmusic.extension.sp
 import com.example.levonsmusic.model.PlaylistBean
+import com.example.levonsmusic.ui.page.home.HomeViewModel
 import com.example.levonsmusic.ui.page.mine.MineViewModel
 import com.example.levonsmusic.ui.theme.LocalColors
 import kotlinx.coroutines.launch
@@ -43,10 +39,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun LikePlaylist(playlist: PlaylistBean, verticalPadding: Dp = 32.dp) {
     val viewModel: MineViewModel = hiltViewModel()
+    val homeViewModel: HomeViewModel = hiltViewModel()
     val scope = rememberCoroutineScope()
-    var loading by remember {
-        mutableStateOf(false)
-    }
 
     Row(
         modifier = Modifier
@@ -60,11 +54,7 @@ fun LikePlaylist(playlist: PlaylistBean, verticalPadding: Dp = 32.dp) {
             .padding(horizontal = 32.dp, vertical = verticalPadding),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        if (loading) {
-            HeartbeatLoading {
 
-            }
-        }
 
         NetworkImage(
             url = playlist.coverImgUrl,
@@ -97,9 +87,13 @@ fun LikePlaylist(playlist: PlaylistBean, verticalPadding: Dp = 32.dp) {
         Button(
             onClick = {
                 scope.launch {
-                    loading = true
-                    viewModel.playHeartBeatMode()
-                    loading = false
+                    try {
+                        homeViewModel.heartbeatLoading = true
+                        viewModel.playHeartBeatMode()
+                        homeViewModel.heartbeatLoading = false
+                    } catch (e: Exception) {
+                        homeViewModel.heartbeatLoading = false
+                    }
                 }
             },
             colors = ButtonDefaults.buttonColors(

@@ -1,6 +1,7 @@
 package com.example.levonsmusic.network
 
 import com.example.levonsmusic.model.AccountInfoResult
+import com.example.levonsmusic.model.HeartbeatListResult
 import com.example.levonsmusic.model.PlaylistDetailResult
 import com.example.levonsmusic.model.PlaylistResult
 import com.example.levonsmusic.model.QRCodeAuthResult
@@ -56,6 +57,10 @@ interface MusicApiService {
         @Query("timeStamp") timeStamp: Long = Date().time
     ): QRCodeAuthResult
 
+    // 刷新登录状态，不支持二维码登录的cookie
+    @GET("/login/refresh")
+    suspend fun loginRefresh()
+
     @GET("/user/account")
     suspend fun getAccountInfo(
         @Query("cookie") cookie: String,
@@ -75,5 +80,12 @@ interface MusicApiService {
 
     @GET("song/detail")
     suspend fun getSongDetail(@Query("ids") ids: String): SongDetailResult
+
+    @GET("/playmode/intelligence/list")
+    suspend fun getHeartbeatList(
+        @Query("id") id: Long,
+        @Query("pid") pid: Long,
+        @Query("sid") sid: Long? = null
+    ): HeartbeatListResult
 }
 

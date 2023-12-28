@@ -11,16 +11,13 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import com.example.levonsmusic.R
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.levonsmusic.component.HeartbeatLoading
 import com.example.levonsmusic.extension.dp
 import com.example.levonsmusic.player.LevonsPlayerController
 import com.example.levonsmusic.ui.page.community.CommunityPage
@@ -30,28 +27,20 @@ import com.example.levonsmusic.ui.page.home.component.MiniPlayer
 import com.example.levonsmusic.ui.page.home.component.MiniPlayerHeight
 import com.example.levonsmusic.ui.page.home.component.PlaylistBottomSheet
 import com.example.levonsmusic.ui.page.home.component.TabMenu
-import com.example.levonsmusic.ui.page.home.component.TabMenuItem
 import com.example.levonsmusic.ui.page.mine.MineDrawer
 import com.example.levonsmusic.ui.page.mine.MinePage
 import com.example.levonsmusic.ui.page.podcast.PodcastPage
 import com.example.levonsmusic.ui.theme.LocalColors
 
-private val tabMenuItems = listOf(
-    TabMenuItem("发现", R.drawable.ic_discovery),
-    TabMenuItem("播客", R.drawable.ic_podcast),
-    TabMenuItem("我的", R.drawable.ic_mine),
-    TabMenuItem("k歌", R.drawable.ic_sing),
-    TabMenuItem("云村", R.drawable.ic_cloud_country),
-)
-
-
-var selectedHomeTabIndex by mutableIntStateOf(2)
-
-@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun HomePage() {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
+    val viewModel: HomeViewModel = hiltViewModel()
+
+    if (viewModel.heartbeatLoading) {
+        HeartbeatLoading {}
+    }
 
     ModalNavigationDrawer(
         drawerContent = { MineDrawer(drawerState) }
@@ -72,13 +61,15 @@ fun HomePage() {
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Body(drawerState: DrawerState) {
+    val viewModel: HomeViewModel = hiltViewModel()
+
     Column(modifier = Modifier.fillMaxSize()) {
         val pagerState = rememberPagerState(
-            initialPage = selectedHomeTabIndex,
-            pageCount = { tabMenuItems.size }
+            initialPage = viewModel.selectedHomeTabIndex,
+            pageCount = { viewModel.tabMenuItems.size }
         )
 
         val padding = if (LevonsPlayerController.showMiniPlayer) MiniPlayerHeight else 0.dp
@@ -90,7 +81,7 @@ fun Body(drawerState: DrawerState) {
                 .padding(bottom = padding),
             state = pagerState
         ) { pagePosition ->
-            selectedHomeTabIndex = pagerState.currentPage
+            viewModel.selectedHomeTabIndex = pagerState.currentPage
             when (pagePosition) {
                 0 -> DiscoveryPage()
                 1 -> PodcastPage()
@@ -101,11 +92,11 @@ fun Body(drawerState: DrawerState) {
         }
 
         TabMenu(
-            tabMenuItems,
+            viewModel.tabMenuItems,
             pagerState,
-            selectedHomeTabIndex,
+            viewModel.selectedHomeTabIndex,
         ) {
-            selectedHomeTabIndex = it
+            viewModel.selectedHomeTabIndex = it
         }
     }
 }

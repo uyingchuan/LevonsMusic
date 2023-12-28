@@ -349,7 +349,11 @@ private fun Body() {
                 LazyColumn(Modifier.padding(bottom = 0.dp)) {
                     itemsIndexed(viewModel.songList) { index, item ->
                         SongItem(index, item) {
-                            LevonsPlayerController.startPlaylist(viewModel.songList, index)
+                            LevonsPlayerController.startPlaylist(
+                                viewModel.songList,
+                                index,
+                                viewModel.playlistBean.id
+                            )
                             LevonsPlayerController.showMiniPlayer = true
                         }
                     }
@@ -368,7 +372,11 @@ private fun PlaylistHeader(playlistBean: PlaylistBean) {
             .fillMaxWidth()
             .height(100.dp)
             .onClick {
-                LevonsPlayerController.startPlaylist(viewModel.songList, 0)
+                LevonsPlayerController.startPlaylist(
+                    viewModel.songList,
+                    0,
+                    viewModel.playlistBean.id
+                )
                 LevonsPlayerController.showMiniPlayer = true
             },
         verticalAlignment = Alignment.CenterVertically

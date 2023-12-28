@@ -6,6 +6,14 @@ data class SongDetailResult(
     val songs: List<SongDetail>
 ) : ApiResult()
 
+data class HeartbeatListResult(
+    val data: List<HeartbeatDetail>
+) : ApiResult()
+
+data class HeartbeatDetail(
+    val songInfo: SongDetail
+)
+
 data class SongDetail(
     val id: Long,
     val name: String,

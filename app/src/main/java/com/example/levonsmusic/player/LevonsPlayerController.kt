@@ -15,12 +15,15 @@ import androidx.compose.runtime.setValue
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import com.elvishew.xlog.XLog
 import com.example.levonsmusic.MainActivity
 import com.example.levonsmusic.MusicApplication
 import com.example.levonsmusic.extension.getNextIndex
 import com.example.levonsmusic.extension.getPreIndex
 import com.example.levonsmusic.extension.toFormatDuration
 import com.example.levonsmusic.model.SongDetail
+import com.example.levonsmusic.network.MusicApiEntryFinder
+import com.example.levonsmusic.network.MusicApiService
 import com.example.levonsmusic.service.MusicPlayerService
 import com.example.levonsmusic.util.showTextToast
 import org.greenrobot.eventbus.EventBus
@@ -37,6 +40,9 @@ object LevonsPlayerController : MusicPlayerListener, DefaultLifecycleObserver {
 
     // 当前播放模式下的原始歌曲列表
     val originPlaylist = mutableStateListOf<SongDetail>()
+
+    // 当前播放的歌单ID
+    private var currentPlaylistId: Long? = null
 
     // 当前播放歌曲在播放列表中的下标
     var currentIndex by mutableIntStateOf(-1)
@@ -62,8 +68,11 @@ object LevonsPlayerController : MusicPlayerListener, DefaultLifecycleObserver {
         private set
 
     var playMode by mutableStateOf(MusicPlayerMode.LOOP)
+        private set
 
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<Array<String>>
+
+    private val musicApi: MusicApiService = MusicApiEntryFinder.getMusicApi()
 
     init {
         LevonsMusicPlayer.addEventListener(this)
@@ -71,8 +80,10 @@ object LevonsPlayerController : MusicPlayerListener, DefaultLifecycleObserver {
 
     /**
      * 播放歌单
+     * [pid] 播放的初始歌单id
      */
-    fun startPlaylist(playlist: List<SongDetail>, index: Int) {
+    fun startPlaylist(playlist: List<SongDetail>, index: Int, pid: Long) {
+        currentPlaylistId = pid
         originPlaylist.clear()
         originPlaylist.addAll(playlist)
         generatePlaylist(index)
@@ -101,13 +112,44 @@ object LevonsPlayerController : MusicPlayerListener, DefaultLifecycleObserver {
     }
 
     /**
+     * 获取心动歌单并播放
+     * [id] 歌曲ID
+     * [pid] 歌单ID
+     * [sid] 要开始播放的歌曲id，判定存在时正在播放，不切歌
+     */
+    suspend fun startHeartbeatList(id: Long, pid: Long, sid: Long? = null) {
+        val heartbeatList = musicApi.getHeartbeatList(id, pid, sid).data
+        val playlist: List<SongDetail> = heartbeatList.map { it.songInfo }
+        playMode = MusicPlayerMode.HEARTBEAT
+        showMiniPlayer = true
+        if (sid == null) {
+            startPlaylist(playlist, 0, pid)
+        } else {
+            val currentSongDetail = originPlaylist[currentOriginIndex]
+            originPlaylist.clear()
+            originPlaylist.add(currentSongDetail)
+            originPlaylist.addAll(playlist)
+            val index = originPlaylist.indexOfFirst { it.id == sid }
+            XLog.d(index)
+            generatePlaylist(0)
+        }
+    }
+
+    /**
      * 根据播放模式[playMode]以及原始歌单[originPlaylist]生成播放歌单[playlist]
+     * [MusicPlayerMode.HEARTBEAT]模式由外部调用接口重新获取心动歌曲列表，重新生成歌单实现
      */
     private fun generatePlaylist(originIndex: Int) {
         when (playMode) {
             MusicPlayerMode.RANDOM -> {
+                val randomList = mutableListOf<SongDetail>()
+                randomList.addAll(originPlaylist)
+                randomList.shuffle()
                 playlist.clear()
-                playlist.addAll(originPlaylist)
+                playlist.addAll(randomList)
+                val index = playlist.indexOfFirst { it.id == originPlaylist[originIndex].id }
+                currentIndex = index
+                currentOriginIndex = originIndex
             }
 
             else -> {
@@ -191,8 +233,16 @@ object LevonsPlayerController : MusicPlayerListener, DefaultLifecycleObserver {
     /**
      * 改变播放模式
      */
-    fun changePlayMode(musicPlayerMode: MusicPlayerMode) {
+    suspend fun changePlayMode(musicPlayerMode: MusicPlayerMode) {
         playMode = musicPlayerMode
+        if (musicPlayerMode == MusicPlayerMode.HEARTBEAT) {
+            val id = originPlaylist[currentOriginIndex].id
+            currentPlaylistId?.let { pid ->
+                startHeartbeatList(id, pid, id)
+            }
+        } else {
+            generatePlaylist(currentOriginIndex)
+        }
     }
 
     /**
