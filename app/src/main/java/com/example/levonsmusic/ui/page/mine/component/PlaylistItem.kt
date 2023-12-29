@@ -37,7 +37,7 @@ import com.example.levonsmusic.ui.theme.LocalColors
 import kotlinx.coroutines.launch
 
 @Composable
-fun LikePlaylist(playlist: PlaylistBean, verticalPadding: Dp = 32.dp) {
+fun PlaylistItem(playlist: PlaylistBean, verticalPadding: Dp = 0.dp, like: Boolean = false) {
     val viewModel: MineViewModel = hiltViewModel()
     val homeViewModel: HomeViewModel = hiltViewModel()
     val scope = rememberCoroutineScope()
@@ -84,33 +84,40 @@ fun LikePlaylist(playlist: PlaylistBean, verticalPadding: Dp = 32.dp) {
             )
         }
 
-        Button(
-            onClick = {
-                scope.launch {
-                    try {
-                        homeViewModel.heartbeatLoading = true
-                        viewModel.playHeartBeatMode()
-                        homeViewModel.heartbeatLoading = false
-                    } catch (e: Exception) {
-                        homeViewModel.heartbeatLoading = false
+        if (like) {
+
+            Button(
+                onClick = {
+                    scope.launch {
+                        try {
+                            homeViewModel.heartbeatLoading = true
+                            viewModel.playHeartBeatMode()
+                            homeViewModel.heartbeatLoading = false
+                        } catch (e: Exception) {
+                            homeViewModel.heartbeatLoading = false
+                        }
                     }
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = LocalColors.current.background,
+                ),
+                modifier = Modifier
+                    .height(48.dp),
+                shape = RoundedCornerShape(24.dp),
+                contentPadding = PaddingValues(horizontal = 24.dp, vertical = 4.dp),
+                content = {
+                    AssetIcon(
+                        R.drawable.ic_play_mode_heartbeat,
+                        modifier = Modifier.size(32.dp),
+                        tint = LocalColors.current.primary
+                    )
+                    Text(
+                        text = " 心动模式",
+                        fontSize = 24.sp,
+                        color = LocalColors.current.secondText
+                    )
                 }
-            },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = LocalColors.current.background,
-            ),
-            modifier = Modifier
-                .height(48.dp),
-            shape = RoundedCornerShape(24.dp),
-            contentPadding = PaddingValues(horizontal = 24.dp, vertical = 4.dp),
-            content = {
-                AssetIcon(
-                    R.drawable.ic_play_mode_heartbeat,
-                    modifier = Modifier.size(32.dp),
-                    tint = LocalColors.current.primary
-                )
-                Text(text = " 心动模式", fontSize = 24.sp, color = LocalColors.current.secondText)
-            }
-        )
+            )
+        }
     }
 }

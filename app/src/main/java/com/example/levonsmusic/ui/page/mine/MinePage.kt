@@ -3,6 +3,7 @@ package com.example.levonsmusic.ui.page.mine
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
@@ -16,8 +17,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
@@ -38,7 +42,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.zIndex
@@ -58,8 +61,9 @@ import com.example.levonsmusic.extension.onClick
 import com.example.levonsmusic.extension.pxToDp
 import com.example.levonsmusic.extension.sp
 import com.example.levonsmusic.extension.toPx
+import com.example.levonsmusic.model.PlaylistBean
 import com.example.levonsmusic.ui.page.login.LoginAccount
-import com.example.levonsmusic.ui.page.mine.component.LikePlaylist
+import com.example.levonsmusic.ui.page.mine.component.PlaylistItem
 import com.example.levonsmusic.ui.page.mine.component.UserInfo
 import com.example.levonsmusic.ui.theme.LocalColors
 import kotlinx.coroutines.CoroutineScope
@@ -199,8 +203,6 @@ private fun PlayList(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .onGloballyPositioned {
-            }
             .graphicsLayer { alpha = bodyAlphaValue },
         state = lazyListState
     ) {
@@ -210,24 +212,81 @@ private fun PlayList(
         }
 
         item {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(360.dp)
-                    .padding(start = 32.dp, end = 32.dp, top = 20.dp)
-                    .background(LocalColors.current.card, RoundedCornerShape(24.dp))
-            ) {
-            }
+            PlaylistItems(
+                "创建歌单(${viewModel.personalPlaylist.size})",
+                viewModel.personalPlaylist,
+                "暂时没有创建的歌单"
+            )
+        }
+
+        item {
+            PlaylistItems(
+                "收藏歌单(${viewModel.collectPlaylist.size})",
+                viewModel.collectPlaylist,
+                "暂时没有收藏的歌单"
+            )
         }
 
         item {
             Box(
                 modifier = Modifier
+                    .padding(horizontal = 32.dp, vertical = 32.dp)
+                    .height(100.dp)
                     .fillMaxWidth()
-                    .height(360.dp)
-                    .padding(start = 32.dp, end = 32.dp, top = 20.dp)
-                    .background(LocalColors.current.card, RoundedCornerShape(24.dp))
+                    .background(Color.White, RoundedCornerShape(24.dp))
+            )
+        }
+    }
+}
+
+@Composable
+private fun PlaylistItems(title: String, playlist: List<PlaylistBean>, tip: String) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 32.dp, end = 32.dp, top = 20.dp)
+            .background(
+                LocalColors.current.card,
+                RoundedCornerShape(24.dp)
+            )
+            .padding(vertical = 24.dp)
+    ) {
+        Text(
+            text = title,
+            color = LocalColors.current.secondText,
+            fontSize = 28.sp,
+            modifier = Modifier.padding(bottom = 12.dp, start = 32.dp)
+        )
+
+        if (playlist.isNotEmpty()) {
+            repeat(playlist.size) { index ->
+                PlaylistItem(playlist[index], verticalPadding = 8.dp)
+            }
+        } else {
+            Column(
+                modifier = Modifier.padding(vertical = 80.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
+                Text(
+                    text = tip,
+                    color = LocalColors.current.secondText,
+                    fontSize = 28.sp,
+                    modifier = Modifier.padding(bottom = 48.dp)
+                )
+                Button(
+                    onClick = { /*TODO*/ },
+                    modifier = Modifier
+                        .padding(start = 160.dp, end = 160.dp, bottom = 40.dp)
+                        .fillMaxWidth()
+                        .height(70.dp),
+                    shape = CircleShape,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = LocalColors.current.primary
+                    )
+                ) {
+                    Text(text = "去添加", fontSize = 30.sp, color = Color.White)
+                }
             }
         }
     }
@@ -276,6 +335,10 @@ fun StickyHeader(
                 if (toolbarState.progress != 0f) {
                     toolbarState.collapse(100)
                 }
+                val offset = lazyListState.layoutInfo.visibleItemsInfo.first { item ->
+                    item.index == 0
+                }.size
+                lazyListState.animateScrollToItem(it + 1, -offset)
             }
         }
     }
@@ -319,7 +382,7 @@ private fun CollapsingToolbarScope.ScrollHeader(bodyAlphaValue: Float, toolbarMa
             contentAlignment = Alignment.Center
         ) {
             if (viewModel.favoritePlaylist != null) {
-                LikePlaylist(viewModel.favoritePlaylist!!)
+                PlaylistItem(viewModel.favoritePlaylist!!, 32.dp, true)
             } else {
                 Text(
                     text = "暂时没有喜欢的歌单",
