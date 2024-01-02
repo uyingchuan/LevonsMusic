@@ -1,5 +1,6 @@
 package com.example.levonsmusic.component
 
+import android.view.WindowManager
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
@@ -27,9 +28,11 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogWindowProvider
 import com.example.levonsmusic.R
 import com.example.levonsmusic.extension.sp
 import com.example.levonsmusic.ui.theme.LocalColors
@@ -129,12 +132,17 @@ fun HeartbeatLoading(
     Dialog(
         onDismissRequest = onDismissRequest,
     ) {
+        // 设置背景透明
+        (LocalView.current.parent as DialogWindowProvider).window.setDimAmount(0f)
+        // 清除dialog对状态栏内容的影响(状态栏颜色)
+        (LocalView.current.parent as DialogWindowProvider).window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+
         Surface(
             modifier = Modifier
                 .width(200.dp)
                 .height(150.dp),
             shape = RoundedCornerShape(12.dp),
-            color = Color.Black.copy(alpha = 0.3f)
+            color = Color.Black.copy(alpha = 0.8f)
         ) {
             Column(
                 verticalArrangement = Arrangement.SpaceEvenly,
